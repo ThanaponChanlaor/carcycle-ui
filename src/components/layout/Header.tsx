@@ -8,7 +8,7 @@ import Button from '@/components/ui/Button'
 
 const navLinks = [
   { to: '/', label: 'CarCycle' },
-  { to: '/about', label: 'About' },
+  { to: '/about', label: 'About', adminOnly: true },
 ]
 
 export default function Header() {
@@ -16,6 +16,7 @@ export default function Header() {
   const sidebarOpen = useAppSelector((state) => state.ui.sidebarOpen)
   const role = useAppSelector((state) => state.auth.role)
   const [showLogin, setShowLogin] = useState(false)
+  const visibleLinks = navLinks.filter((link) => !link.adminOnly || role === 'admin')
 
   return (
     <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur-sm print:hidden">
@@ -25,7 +26,7 @@ export default function Header() {
         </Link>
 
         <nav className="hidden md:flex md:items-center md:gap-1">
-          {navLinks.map((link) => (
+          {visibleLinks.map((link) => (
             <NavLink
               key={link.to}
               to={link.to}
@@ -79,7 +80,7 @@ export default function Header() {
       {sidebarOpen && (
         <nav className="border-t border-slate-200 bg-white md:hidden">
           <div className="container-app flex flex-col gap-1 py-3">
-            {navLinks.map((link) => (
+            {visibleLinks.map((link) => (
               <NavLink
                 key={link.to}
                 to={link.to}
