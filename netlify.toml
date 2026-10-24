@@ -1,0 +1,14 @@
+# Builds run in GitHub Actions (.github/workflows/deploy.yml) and are uploaded
+# with netlify-cli; this file still applies redirects/headers to that deploy.
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# BrowserRouter: serve index.html for every client-side route (e.g. /cars/car-001)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
