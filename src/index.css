@@ -1,33 +1,103 @@
 @import "tailwindcss";
+@import "@fontsource/ibm-plex-sans-thai-looped/400.css";
+@import "@fontsource/ibm-plex-sans-thai-looped/500.css";
+@import "@fontsource/ibm-plex-sans-thai-looped/600.css";
+@import "@fontsource/ibm-plex-sans-thai-looped/700.css";
 
+/* Tokens are documented in design-system/carcycle/MASTER.md. Tailwind's default
+   palette is cleared so components can only use the tokens below. */
 @theme {
-  --color-primary-50: #eff6ff;
-  --color-primary-100: #dbeafe;
-  --color-primary-200: #bfdbfe;
-  --color-primary-300: #93c5fd;
-  --color-primary-400: #60a5fa;
-  --color-primary-500: #3b82f6;
-  --color-primary-600: #2563eb;
-  --color-primary-700: #1d4ed8;
-  --color-primary-800: #1e40af;
-  --color-primary-900: #1e3a8a;
+  --color-*: initial;
+  --color-white: #ffffff;
+  --color-paper: #faf7f0;
+  --color-surface: #ffffff;
+  --color-tint: #efe9dd;
+  --color-ink: #2b2118;
+  --color-ink-muted: #4f4338;
+  --color-primary: #114b3a;
+  --color-primary-hover: #0b3a2c;
+  --color-primary-tint: #e6f0eb;
+  --color-accent: #f2c230;
+  --color-error: #8a1f11;
+  --color-error-tint: #fbeae6;
+  --color-rule: #d9d1c3;
+  --color-border-control: #6e6155;
+  --color-disabled-bg: #e9e3d8;
 
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "IBM Plex Sans Thai Looped", "Sarabun", "Noto Sans Thai Looped", ui-sans-serif, system-ui, sans-serif;
+
+  /* text-xs and text-sm are 18px on purpose: nothing may fall below the minimum. */
+  --text-xs: 1.125rem;
+  --text-xs--line-height: 1.7;
+  --text-sm: 1.125rem;
+  --text-sm--line-height: 1.7;
+  --text-base: 1.25rem;
+  --text-base--line-height: 1.7;
+  --text-lg: 1.375rem;
+  --text-lg--line-height: 1.6;
+  --text-xl: 1.5rem;
+  --text-xl--line-height: 1.5;
+  --text-2xl: 1.75rem;
+  --text-2xl--line-height: 1.5;
+  --text-3xl: 2.25rem;
+  --text-3xl--line-height: 1.5;
+  --text-4xl: 2.5rem;
+  --text-4xl--line-height: 1.5;
 }
 
 @layer base {
   html {
-    @apply scroll-smooth;
+    font-size: 100%;
   }
 
   body {
-    @apply bg-slate-50 text-slate-900 antialiased font-sans;
+    @apply bg-paper text-ink font-sans text-base font-normal;
+    overflow-wrap: anywhere;
+  }
+
+  h1 {
+    @apply text-3xl font-bold;
+  }
+
+  h2 {
+    @apply text-2xl font-semibold;
+  }
+
+  h3 {
+    @apply text-xl font-semibold;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 3px;
+  }
+
+  /* Native date picker button: at least 48px to tap. */
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    width: 1.5rem;
+    height: 1.5rem;
+    padding: 0.75rem;
+    cursor: pointer;
+  }
+
+  /* The clear action is a labelled button, not this tiny native cross. */
+  input[type="search"]::-webkit-search-cancel-button {
+    display: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation: none !important;
+      transition: none !important;
+    }
   }
 }
 
 @layer utilities {
   .container-app {
-    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+    @apply mx-auto w-full max-w-[60rem] px-4 sm:px-6;
   }
 }
 

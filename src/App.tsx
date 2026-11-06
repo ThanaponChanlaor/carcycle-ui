@@ -1,22 +1,27 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Layout from '@/components/layout/Layout'
 import HomePage from '@/pages/HomePage'
 import CarCyclePage from '@/pages/CarCyclePage'
 import AboutPage from '@/pages/AboutPage'
+import NotFoundPage from '@/pages/NotFoundPage'
 import AdminRoute from '@/features/auth/AdminRoute'
 
+// A data router is what makes useBlocker (unsaved edits) and ScrollRestoration work.
+const router = createBrowserRouter([
+  {
+    element: <Layout />,
+    children: [
+      { index: true, element: <HomePage /> },
+      { path: 'cars/:carId', element: <CarCyclePage /> },
+      {
+        element: <AdminRoute />,
+        children: [{ path: 'about', element: <AboutPage /> }],
+      },
+      { path: '*', element: <NotFoundPage /> },
+    ],
+  },
+])
+
 export default function App() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route element={<Layout />}>
-          <Route index element={<HomePage />} />
-          <Route path="cars/:carId" element={<CarCyclePage />} />
-          <Route element={<AdminRoute />}>
-            <Route path="about" element={<AboutPage />} />
-          </Route>
-        </Route>
-      </Routes>
-    </BrowserRouter>
-  )
+  return <RouterProvider router={router} />
 }
