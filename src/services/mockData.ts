@@ -1,4 +1,5 @@
 import type { Car, CarHistoryEntry, CarUpdateInput } from '@/types'
+import { diffChanges } from '@/services/diffChanges'
 
 const now = () => new Date().toISOString()
 
@@ -251,14 +252,7 @@ export async function mockUpdateCar(id: string, changes: CarUpdateInput): Promis
   }
 
   const current = cars[index]
-  const fields = Object.keys(changes) as (keyof CarUpdateInput)[]
-  const changeRecords = fields
-    .filter((field) => changes[field] !== undefined && String(changes[field]) !== String(current[field] ?? ''))
-    .map((field) => ({
-      field,
-      oldValue: String(current[field] ?? ''),
-      newValue: String(changes[field]),
-    }))
+  const changeRecords = diffChanges(current, changes)
 
   const updated: Car = { ...current, ...changes, updatedAt: now() }
   cars[index] = updated
