@@ -1,75 +1,54 @@
 @import "tailwindcss";
-@import "@fontsource/ibm-plex-sans-thai-looped/400.css";
-@import "@fontsource/ibm-plex-sans-thai-looped/500.css";
-@import "@fontsource/ibm-plex-sans-thai-looped/600.css";
-@import "@fontsource/ibm-plex-sans-thai-looped/700.css";
+@import "@fontsource/ibm-plex-sans-thai/400.css";
+@import "@fontsource/ibm-plex-sans-thai/600.css";
+@import "@fontsource/ibm-plex-sans-thai/700.css";
 
-/* Tokens are documented in design-system/carcycle/MASTER.md. Tailwind's default
-   palette is cleared so components can only use the tokens below. */
+/* Rules are in design-system/carcycle/MASTER.md: no text below 16px (no
+   text-xs / text-sm on text), no slate-400 / slate-500 on text. */
 @theme {
-  --color-*: initial;
-  --color-white: #ffffff;
-  --color-paper: #faf7f0;
-  --color-surface: #ffffff;
-  --color-tint: #efe9dd;
-  --color-ink: #2b2118;
-  --color-ink-muted: #4f4338;
-  --color-primary: #114b3a;
-  --color-primary-hover: #0b3a2c;
-  --color-primary-tint: #e6f0eb;
-  --color-accent: #f2c230;
-  --color-error: #8a1f11;
-  --color-error-tint: #fbeae6;
-  --color-rule: #d9d1c3;
-  --color-border-control: #6e6155;
-  --color-disabled-bg: #e9e3d8;
+  --color-primary-50: #eff6ff;
+  --color-primary-100: #dbeafe;
+  --color-primary-200: #bfdbfe;
+  --color-primary-300: #93c5fd;
+  --color-primary-400: #60a5fa;
+  --color-primary-500: #3b82f6;
+  --color-primary-600: #2563eb;
+  --color-primary-700: #1d4ed8;
+  --color-primary-800: #1e40af;
+  --color-primary-900: #1e3a8a;
 
-  --font-sans: "IBM Plex Sans Thai Looped", "Sarabun", "Noto Sans Thai Looped", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "IBM Plex Sans Thai", ui-sans-serif, system-ui, sans-serif;
 
-  /* text-xs and text-sm are 18px on purpose: nothing may fall below the minimum. */
-  --text-xs: 1.125rem;
-  --text-xs--line-height: 1.7;
-  --text-sm: 1.125rem;
-  --text-sm--line-height: 1.7;
-  --text-base: 1.25rem;
-  --text-base--line-height: 1.7;
-  --text-lg: 1.375rem;
+  /* Thai needs room above and below for vowels and tone marks. */
+  --text-base--line-height: 1.6;
   --text-lg--line-height: 1.6;
-  --text-xl: 1.5rem;
-  --text-xl--line-height: 1.5;
-  --text-2xl: 1.75rem;
-  --text-2xl--line-height: 1.5;
-  --text-3xl: 2.25rem;
-  --text-3xl--line-height: 1.5;
-  --text-4xl: 2.5rem;
-  --text-4xl--line-height: 1.5;
 }
 
 @layer base {
   html {
-    font-size: 100%;
+    @apply scroll-smooth;
   }
 
   body {
-    @apply bg-paper text-ink font-sans text-base font-normal;
+    @apply bg-slate-50 font-sans text-base text-slate-900 antialiased;
     overflow-wrap: anywhere;
   }
 
   h1 {
-    @apply text-3xl font-bold;
+    @apply text-3xl leading-snug font-bold md:text-4xl;
   }
 
   h2 {
-    @apply text-2xl font-semibold;
+    @apply text-2xl leading-snug font-semibold;
   }
 
   h3 {
-    @apply text-xl font-semibold;
+    @apply text-xl leading-snug font-semibold;
   }
 
   :focus-visible {
-    outline: 3px solid var(--color-primary);
-    outline-offset: 3px;
+    outline: 2px solid var(--color-primary-600);
+    outline-offset: 2px;
   }
 
   /* Native date picker button: at least 48px to tap. */
@@ -97,7 +76,7 @@
 
 @layer utilities {
   .container-app {
-    @apply mx-auto w-full max-w-[60rem] px-4 sm:px-6;
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
   }
 }
 

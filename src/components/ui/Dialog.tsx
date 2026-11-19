@@ -33,7 +33,7 @@ export default function Dialog({ title, onClose, children }: DialogProps) {
         e.preventDefault()
         onClose()
       }}
-      className="m-auto max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-[36rem] overflow-y-auto rounded-lg border-2 border-ink bg-surface p-6 text-ink backdrop:bg-ink/60 sm:p-8"
+      className="m-auto max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-[36rem] overflow-y-auto rounded-xl border border-slate-200 bg-white p-6 text-slate-900 shadow-xl backdrop:bg-slate-900/60 sm:p-8"
     >
       <h2 ref={titleRef} id={titleId} tabIndex={-1} className="outline-none">
         {title}

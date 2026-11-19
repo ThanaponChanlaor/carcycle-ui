@@ -35,7 +35,7 @@ export default function CarHistory({ carId }: CarHistoryProps) {
 
   return (
     <section aria-labelledby="history-heading" className="print:hidden">
-      <div className="flex flex-wrap items-center justify-between gap-4 border-b-2 border-ink pb-2">
+      <div className="flex flex-wrap items-center justify-between gap-4">
         <h2 id="history-heading">ประวัติการแก้ไข</h2>
         <Button variant="secondary" aria-expanded={isOpen} aria-controls="history-panel" onClick={handleToggle}>
           <ToggleIcon aria-hidden="true" className="h-6 w-6" />
@@ -55,9 +55,9 @@ export default function CarHistory({ carId }: CarHistoryProps) {
         {!historyLoading && !loadFailed && history.length > 0 && (
           <ol>
             {history.map((entry) => (
-              <li key={entry.id} className="border-b border-rule py-4">
+              <li key={entry.id} className="border-b border-slate-200 py-4">
                 <p className="font-semibold">{formatDateTime(entry.changedAt)}</p>
-                <p className="text-ink-muted">แก้ไขโดย {entry.changedBy}</p>
+                <p className="text-slate-600">แก้ไขโดย {entry.changedBy}</p>
                 <ul className="mt-2 space-y-2">
                   {entry.changes.map((change, i) => (
                     <li key={i}>
@@ -71,7 +71,7 @@ export default function CarHistory({ carId }: CarHistoryProps) {
                     </li>
                   ))}
                 </ul>
-                {entry.note && <p className="mt-2 text-ink-muted">หมายเหตุ: {entry.note}</p>}
+                {entry.note && <p className="mt-2 text-slate-600">หมายเหตุ: {entry.note}</p>}
               </li>
             ))}
           </ol>

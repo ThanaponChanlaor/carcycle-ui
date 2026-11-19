@@ -8,9 +8,7 @@ import Button from '@/components/ui/Button'
 import CarImage from '@/components/ui/CarImage'
 import ErrorMessage from '@/components/ui/ErrorMessage'
 import Field from '@/components/ui/Field'
-import LicensePlate from '@/components/ui/LicensePlate'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
-import { buttonClasses } from '@/components/ui/buttonStyles'
 import { formatDate } from '@/utils/format'
 
 export default function CarList() {
@@ -41,7 +39,7 @@ export default function CarList() {
 
   return (
     <div className="space-y-8">
-      <h1>รถทั้งหมด</h1>
+      {(error || items.length === 0) && <h1>รถทั้งหมด</h1>}
 
       {loading && items.length === 0 && <LoadingSpinner className="py-20" />}
 
@@ -54,8 +52,16 @@ export default function CarList() {
 
       {!error && items.length > 0 && (
         <>
-          <div className="space-y-2">
-            <div className="flex flex-wrap items-end gap-4">
+          <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
+            <div>
+              <h1>รถทั้งหมด</h1>
+              <p role="status" className="text-slate-600">
+                {searchQuery
+                  ? `พบ ${filteredCars.length} คัน จากทั้งหมด ${items.length} คัน`
+                  : `มีรถทั้งหมด ${items.length} คัน`}
+              </p>
+            </div>
+            <div className="flex w-full flex-wrap items-end gap-4 sm:w-auto sm:basis-[28rem]">
               <Field
                 ref={searchRef}
                 id="car-search"
@@ -74,38 +80,27 @@ export default function CarList() {
                 </Button>
               )}
             </div>
-            <p role="status" className="text-ink-muted">
-              {searchQuery ? `พบ ${filteredCars.length} คัน จากทั้งหมด ${items.length} คัน` : `มีรถทั้งหมด ${items.length} คัน`}
-            </p>
           </div>
 
-          <ul className="border-t-2 border-ink">
+          <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {filteredCars.map((car) => (
-              <li key={car.id} className="border-b border-rule py-2">
+              <li key={car.id}>
                 <Link
                   to={`/cars/${car.id}`}
-                  className="flex flex-wrap items-center gap-6 rounded-lg px-2 py-4 transition-colors duration-150 hover:bg-primary-tint"
+                  className="flex h-full flex-col rounded-xl border border-slate-200 bg-white p-6 shadow-sm transition-shadow duration-150 hover:border-primary-600 hover:shadow-md"
                 >
-                  <CarImage
-                    src={car.imageUrl}
-                    alt={`${car.brand} ${car.name}`}
-                    className="h-36 w-full flex-1 basis-[12rem] sm:aspect-[4/3] sm:h-auto sm:max-w-[14rem]"
-                  />
-                  <div className="flex-[2] basis-[16rem] space-y-2">
-                    <h2 className="text-xl">
-                      {car.brand} {car.name}
-                    </h2>
-                    <LicensePlate plate={car.licensePlate} />
-                    <p className="text-ink-muted">
-                      {fieldLabels.color}: {car.color}
-                    </p>
-                    <p>
-                      {fieldLabels.insuranceRenewalDate}{' '}
-                      <span className="font-semibold">{formatDate(car.insuranceRenewalDate)}</span>
-                    </p>
-                  </div>
-                  <span className={buttonClasses('secondary')}>
-                    ดูข้อมูลรถ
+                  <CarImage src={car.imageUrl} alt={`${car.brand} ${car.name}`} className="aspect-video w-full" />
+                  <h2 className="mt-4">
+                    {car.brand} {car.name}
+                  </h2>
+                  <p className="text-slate-600">
+                    {fieldLabels.color} {car.color}
+                  </p>
+                  <div className="my-3 border-t border-slate-200" />
+                  <p className="font-semibold">ทะเบียน {car.licensePlate}</p>
+                  <p className="text-slate-600">ประกันหมดอายุ {formatDate(car.insuranceRenewalDate)}</p>
+                  <span className="mt-auto inline-flex items-center gap-1 pt-3 font-semibold text-primary-700">
+                    ดูรายละเอียด
                     <ChevronRight aria-hidden="true" className="h-6 w-6" />
                   </span>
                 </Link>

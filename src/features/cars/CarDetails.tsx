@@ -1,8 +1,7 @@
-import { Pencil } from 'lucide-react'
+import { Lock, Pencil } from 'lucide-react'
 import { fieldLabels } from '@/features/cars/carFields'
 import Button from '@/components/ui/Button'
 import CarImage from '@/components/ui/CarImage'
-import LicensePlate from '@/components/ui/LicensePlate'
 import { formatDate, formatMileage, NO_DATA } from '@/utils/format'
 import type { Car } from '@/types'
 
@@ -13,7 +12,7 @@ interface CarDetailsProps {
   onEdit: () => void
 }
 
-const sectionHeading = 'border-b-2 border-ink pb-2'
+const sectionHeading = 'border-b border-slate-200 pb-2'
 
 export default function CarDetails({ car, isAdmin, focusEdit, onEdit }: CarDetailsProps) {
   const services = [
@@ -38,14 +37,14 @@ export default function CarDetails({ car, isAdmin, focusEdit, onEdit }: CarDetai
   ]
 
   return (
-    <div className="space-y-12 print:hidden">
+    <div className="space-y-8 print:hidden">
       <div className="flex flex-wrap items-start gap-8">
         <div className="flex-1 basis-[20rem] space-y-4">
           <h1>
             {car.brand} {car.name}
           </h1>
-          <LicensePlate plate={car.licensePlate} size="lg" />
-          <p className="text-ink-muted">
+          <p className="text-lg font-semibold">ทะเบียน {car.licensePlate}</p>
+          <p className="text-slate-600">
             {fieldLabels.color}: {car.color || NO_DATA}
           </p>
           {isAdmin && (
@@ -70,9 +69,9 @@ export default function CarDetails({ car, isAdmin, focusEdit, onEdit }: CarDetai
           {insurance.map((row) => (
             <div
               key={row.label}
-              className="flex flex-wrap justify-between gap-x-8 border-b border-rule py-4"
+              className="flex flex-wrap justify-between gap-x-8 border-b border-slate-200 py-4"
             >
-              <dt className="text-ink-muted">{row.label}</dt>
+              <dt className="text-slate-600">{row.label}</dt>
               <dd className="font-semibold">{row.value}</dd>
             </div>
           ))}
@@ -85,25 +84,30 @@ export default function CarDetails({ car, isAdmin, focusEdit, onEdit }: CarDetai
         </h2>
         <ul>
           {services.map((service) => (
-            <li key={service.title} className="flex flex-wrap gap-x-8 gap-y-2 border-b border-rule py-4">
+            <li key={service.title} className="flex flex-wrap gap-x-8 gap-y-2 border-b border-slate-200 py-4">
               <h3 className="flex-1 basis-[10rem]">{service.title}</h3>
               <dl className="flex flex-[3] basis-[20rem] flex-wrap gap-x-8 gap-y-2">
                 <div className="flex-1 basis-[10rem]">
-                  <dt className="text-sm text-ink-muted">เลขไมล์ล่าสุด</dt>
+                  <dt className="text-slate-600">เลขไมล์ล่าสุด</dt>
                   <dd className="font-semibold">{service.mileage}</dd>
                 </div>
                 <div className="flex-1 basis-[10rem]">
-                  <dt className="text-sm text-ink-muted">เปลี่ยนล่าสุดเมื่อ</dt>
+                  <dt className="text-slate-600">เปลี่ยนล่าสุดเมื่อ</dt>
                   <dd className="font-semibold">{formatDate(service.date)}</dd>
                 </div>
               </dl>
             </li>
           ))}
         </ul>
-        <p className="mt-4 text-sm text-ink-muted">แก้ไขข้อมูลล่าสุดเมื่อ {formatDate(car.updatedAt)}</p>
+        <p className="mt-4 text-slate-600">แก้ไขข้อมูลล่าสุดเมื่อ {formatDate(car.updatedAt)}</p>
       </section>
 
-      {!isAdmin && <p className="text-sm text-ink-muted">เฉพาะผู้ดูแลระบบเท่านั้นที่แก้ไขข้อมูลได้</p>}
+      {!isAdmin && (
+        <p className="flex items-center gap-2 text-slate-600">
+          <Lock aria-hidden="true" className="h-5 w-5 shrink-0" />
+          เฉพาะผู้ดูแลระบบเท่านั้นที่แก้ไขข้อมูลได้
+        </p>
+      )}
     </div>
   )
 }

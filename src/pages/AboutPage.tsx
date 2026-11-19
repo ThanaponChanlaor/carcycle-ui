@@ -4,12 +4,12 @@ const structure = [
   { folder: 'src/app/', desc: 'ที่เก็บ Redux store และ typed hooks (useAppDispatch, useAppSelector)' },
   { folder: 'src/services/', desc: 'การเชื่อมต่อ Firebase, ข้อมูลตัวอย่าง และ API สลับได้ด้วย VITE_DATA_SOURCE' },
   { folder: 'src/features/cars/', desc: 'ส่วนของรถ: slice, รายการรถ, หน้าข้อมูลรถ, ฟอร์มแก้ไข และประวัติ' },
-  { folder: 'src/components/', desc: 'ส่วนประกอบหน้าจอที่ใช้ร่วมกัน เช่น Button, Field, Dialog, LicensePlate, Header, Footer' },
+  { folder: 'src/components/', desc: 'ส่วนประกอบหน้าจอที่ใช้ร่วมกัน เช่น Button, Field, Dialog, Header, Footer' },
   { folder: 'src/pages/', desc: 'หน้าเว็บแต่ละหน้าตามเส้นทาง (route)' },
   { folder: 'src/types/', desc: 'TypeScript types ที่ใช้ร่วมกัน' },
 ]
 
-const code = 'rounded bg-tint px-2 py-1 text-sm'
+const code = 'rounded bg-slate-100 px-2 py-1'
 
 export default function AboutPage() {
   return (
@@ -31,12 +31,12 @@ export default function AboutPage() {
       </div>
 
       <section aria-labelledby="structure-heading">
-        <h2 id="structure-heading" className="border-b-2 border-ink pb-2">
+        <h2 id="structure-heading" className="border-b border-slate-200 pb-2">
           โครงสร้างโฟลเดอร์
         </h2>
         <dl>
           {structure.map((item) => (
-            <div key={item.folder} className="border-b border-rule py-4">
+            <div key={item.folder} className="border-b border-slate-200 py-4">
               <dt>
                 <code className={code}>{item.folder}</code>
               </dt>

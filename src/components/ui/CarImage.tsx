@@ -13,7 +13,7 @@ export default function CarImage({ src, alt, className = '' }: CarImageProps) {
   if (!src || failed) {
     return (
       <div
-        className={`flex flex-col items-center justify-center gap-1 rounded-lg bg-tint p-4 text-center text-sm text-ink-muted ${className}`}
+        className={`flex flex-col items-center justify-center gap-1 rounded-lg bg-slate-100 p-4 text-center text-slate-600 ${className}`}
       >
         <CarFront aria-hidden="true" className="h-10 w-10" />
         ยังไม่มีรูปภาพ
@@ -27,7 +27,7 @@ export default function CarImage({ src, alt, className = '' }: CarImageProps) {
       alt={alt}
       loading="lazy"
       onError={() => setFailed(true)}
-      className={`rounded-lg bg-tint object-cover ${className}`}
+      className={`rounded-lg bg-slate-100 object-cover ${className}`}
     />
   )
 }

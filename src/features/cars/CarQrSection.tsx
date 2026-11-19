@@ -13,9 +13,9 @@ export default function CarQrSection({ car }: CarQrSectionProps) {
   return (
     <section
       aria-labelledby="qr-heading"
-      className="print:flex print:flex-col print:items-center print:gap-4 print:p-12 print:text-center"
+      className="flex flex-col items-center text-center print:gap-4 print:p-12"
     >
-      <h2 id="qr-heading" className="border-b-2 border-ink pb-2 print:hidden">
+      <h2 id="qr-heading" className="print:hidden">
         ป้ายคิวอาร์โค้ด
       </h2>
       <p className="mt-4 print:hidden">สแกนคิวอาร์โค้ดนี้ด้วยมือถือเพื่อเปิดหน้านี้ หรือพิมพ์ติดไว้ที่รถ</p>

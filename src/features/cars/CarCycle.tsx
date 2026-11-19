@@ -8,6 +8,7 @@ import CarEditForm from '@/features/cars/CarEditForm'
 import CarHistory from '@/features/cars/CarHistory'
 import CarQrSection from '@/features/cars/CarQrSection'
 import ButtonLink from '@/components/ui/ButtonLink'
+import Card from '@/components/ui/Card'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import ErrorMessage from '@/components/ui/ErrorMessage'
 
@@ -83,7 +84,7 @@ export default function CarCycle() {
   }
 
   return (
-    <div className="space-y-12 print:space-y-0">
+    <div className="space-y-6 print:space-y-0">
       {title}
       <ButtonLink to="/" variant="quiet" className="px-2 print:hidden">
         <ArrowLeft aria-hidden="true" className="h-6 w-6" />
@@ -95,26 +96,34 @@ export default function CarCycle() {
           ref={noticeRef}
           role="status"
           tabIndex={-1}
-          className="flex items-start gap-3 rounded-lg border-2 border-primary bg-primary-tint p-6 font-semibold text-primary print:hidden"
+          className="flex items-start gap-3 rounded-xl border border-primary-200 bg-primary-50 p-6 font-semibold text-primary-800 print:hidden"
         >
           <CircleCheck aria-hidden="true" className="mt-1 h-6 w-6 shrink-0" />
           บันทึกข้อมูลเรียบร้อยแล้ว
         </p>
       )}
 
-      <CarDetails
-        car={car}
-        isAdmin={isAdmin}
-        focusEdit={cameFromEdit}
-        onEdit={() => {
-          setSavedNotice(false)
-          setCameFromEdit(false)
-          setIsEditing(true)
-        }}
-      />
+      <div className="grid gap-6 lg:grid-cols-3 print:block">
+        <Card className="lg:col-span-2 print:hidden">
+          <CarDetails
+            car={car}
+            isAdmin={isAdmin}
+            focusEdit={cameFromEdit}
+            onEdit={() => {
+              setSavedNotice(false)
+              setCameFromEdit(false)
+              setIsEditing(true)
+            }}
+          />
+        </Card>
+        <Card className="self-start print:border-0 print:p-0 print:shadow-none">
+          <CarQrSection car={car} />
+        </Card>
+      </div>
 
-      <CarHistory key={car.id} carId={car.id} />
-      <CarQrSection car={car} />
+      <Card className="print:hidden">
+        <CarHistory key={car.id} carId={car.id} />
+      </Card>
     </div>
   )
 }

@@ -16,11 +16,11 @@ import {
   type FormState,
 } from '@/features/cars/carForm'
 import Button from '@/components/ui/Button'
+import Card from '@/components/ui/Card'
 import CarImage from '@/components/ui/CarImage'
 import ConfirmDialog from '@/components/ui/ConfirmDialog'
 import ErrorMessage from '@/components/ui/ErrorMessage'
 import Field from '@/components/ui/Field'
-import LicensePlate from '@/components/ui/LicensePlate'
 import { buttonClasses } from '@/components/ui/buttonStyles'
 import { toDriveDirectImageUrl } from '@/utils/googleDrive'
 import { formatDate, formatFieldValue } from '@/utils/format'
@@ -113,12 +113,12 @@ export default function CarEditForm({ car, onCancel, onSaved }: CarEditFormProps
   const errorList = (Object.entries(errors) as [FieldName, string | undefined][]).filter(([, message]) => message)
 
   return (
-    <div className="space-y-8">
+    <Card className="space-y-8">
       <div className="space-y-4">
         <h1 ref={headingRef} tabIndex={-1} className="outline-none">
           แก้ไขข้อมูล {car.brand} {car.name}
         </h1>
-        <LicensePlate plate={car.licensePlate} />
+        <p className="text-lg font-semibold">ทะเบียน {car.licensePlate}</p>
       </div>
 
       {failedAttempts > 0 && errorList.length > 0 && (
@@ -126,7 +126,7 @@ export default function CarEditForm({ car, onCancel, onSaved }: CarEditFormProps
           ref={summaryRef}
           tabIndex={-1}
           role="alert"
-          className="rounded-lg border-2 border-error bg-error-tint p-6 text-error"
+          className="rounded-xl border border-red-200 bg-red-50 p-6 text-red-700"
         >
           <p className="flex items-start gap-3 font-semibold">
             <CircleAlert aria-hidden="true" className="mt-1 h-6 w-6 shrink-0" />
@@ -154,8 +154,8 @@ export default function CarEditForm({ car, onCancel, onSaved }: CarEditFormProps
       <form onSubmit={handleSubmit} noValidate className="space-y-12">
         {formSections.map((section) => (
           <section key={section.title} className="space-y-6">
-            <h2 className="border-b-2 border-ink pb-2">{section.title}</h2>
-            <div className="max-w-[36rem] space-y-6">
+            <h2 className="border-b border-slate-200 pb-2">{section.title}</h2>
+            <div className="grid gap-6 md:grid-cols-2">
               {section.fields.map(({ name, kind }) => (
                 <Field
                   key={name}
@@ -215,7 +215,7 @@ export default function CarEditForm({ car, onCancel, onSaved }: CarEditFormProps
           </p>
         )}
 
-        <div className="flex flex-wrap gap-4 border-t-2 border-ink pt-6">
+        <div className="flex flex-wrap gap-4 border-t border-slate-200 pt-6">
           <Button type="submit">
             <Save aria-hidden="true" className="h-6 w-6" />
             ตรวจสอบก่อนบันทึก
@@ -239,9 +239,9 @@ export default function CarEditForm({ car, onCancel, onSaved }: CarEditFormProps
           <p>กรุณาตรวจสอบ {review.length} รายการนี้ก่อนบันทึก</p>
           <ul className="mt-4">
             {review.map((change) => (
-              <li key={change.field} className="border-b border-rule py-3">
+              <li key={change.field} className="border-b border-slate-200 py-3">
                 <p className="font-semibold">{fieldLabels[change.field as FieldName]}</p>
-                <p className="text-ink-muted">จาก {formatFieldValue(change.field, change.oldValue)}</p>
+                <p className="text-slate-600">จาก {formatFieldValue(change.field, change.oldValue)}</p>
                 <p>เป็น {formatFieldValue(change.field, change.newValue)}</p>
               </li>
             ))}
@@ -272,6 +272,6 @@ export default function CarEditForm({ car, onCancel, onSaved }: CarEditFormProps
           <p>ข้อมูลที่แก้ไขไว้ยังไม่ได้บันทึก ถ้าออกตอนนี้ข้อมูลเหล่านี้จะหายไป</p>
         </ConfirmDialog>
       )}
-    </div>
+    </Card>
   )
 }
