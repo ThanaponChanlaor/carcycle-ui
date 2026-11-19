@@ -1,13 +1,4 @@
-import {
-  addDoc,
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  orderBy,
-  query,
-  updateDoc,
-} from 'firebase/firestore'
+import { collection, doc, getDoc, getDocs, orderBy, query, writeBatch } from 'firebase/firestore/lite'
 import { db } from '@/services/firebaseClient'
 import { diffChanges } from '@/services/diffChanges'
 import type { Car, CarHistoryEntry, CarUpdateInput } from '@/types'
@@ -51,16 +42,18 @@ export async function firestoreUpdateCar(id: string, changes: CarUpdateInput): P
   const changeRecords = diffChanges(current, changes)
 
   const updatedAt = now()
-  await updateDoc(ref, { ...changes, updatedAt })
-
+  // One commit: the car and its history entry are saved together or not at all.
+  const batch = writeBatch(db)
+  batch.update(ref, { ...changes, updatedAt })
   if (changeRecords.length > 0) {
-    await addDoc(historyCollection(id), {
+    batch.set(doc(historyCollection(id)), {
       carId: id,
       changedAt: updatedAt,
       changedBy: 'CarCycle Staff',
       changes: changeRecords,
     })
   }
+  await batch.commit()
 
   return { data: { id, ...current, ...changes, updatedAt } as Car }
 }
