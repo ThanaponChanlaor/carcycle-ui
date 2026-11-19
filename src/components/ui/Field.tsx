@@ -44,7 +44,7 @@ export default function Field({ ref, id, label, hint, error, note, className = '
         </p>
       )}
       {error && (
-        <p id={errorId} className="mt-2 flex items-start gap-2 font-medium text-red-700">
+        <p id={errorId} className="mt-2 flex items-start gap-2 font-semibold text-red-700">
           <CircleAlert aria-hidden="true" className="mt-1 h-6 w-6 shrink-0" />
           <span>{error}</span>
         </p>

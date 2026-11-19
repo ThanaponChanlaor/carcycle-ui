@@ -61,7 +61,7 @@ export default function CarHistory({ carId }: CarHistoryProps) {
                 <ul className="mt-2 space-y-2">
                   {entry.changes.map((change, i) => (
                     <li key={i}>
-                      <span className="font-medium">
+                      <span className="font-semibold">
                         {fieldLabels[change.field as keyof CarUpdateInput] ?? change.field}
                       </span>
                       {' จาก '}

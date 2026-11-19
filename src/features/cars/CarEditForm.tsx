@@ -210,7 +210,7 @@ export default function CarEditForm({ car, onCancel, onSaved }: CarEditFormProps
         ))}
 
         {noChanges && (
-          <p role="status" className="font-medium">
+          <p role="status" className="font-semibold">
             ยังไม่มีข้อมูลที่เปลี่ยนแปลง จึงไม่ต้องบันทึก
           </p>
         )}

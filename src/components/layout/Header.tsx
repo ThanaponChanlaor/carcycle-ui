@@ -43,7 +43,7 @@ export default function Header() {
               end
               className={({ isActive }) =>
                 `inline-flex min-h-12 items-center gap-2 rounded-lg px-4 py-1 transition-colors duration-150 ${
-                  isActive ? 'bg-primary-50 font-semibold text-primary-800' : 'font-medium text-primary-700 hover:bg-primary-50'
+                  isActive ? 'bg-primary-50 font-semibold text-primary-800' : 'font-semibold text-primary-700 hover:bg-primary-50'
                 }`
               }
             >
