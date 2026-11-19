@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "seed:firebase": "node scripts/seed-firebase.mjs"
+    "seed:firebase": "node scripts/seed-firebase.mjs",
+    "test": "vitest run"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.5.0",
@@ -33,6 +34,7 @@
     "tailwindcss": "^4.0.0",
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.18.2",
-    "vite": "^6.0.5"
+    "vite": "^6.0.5",
+    "vitest": "^5.1.1"
   }
 }
