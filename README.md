@@ -86,8 +86,8 @@ npm run preview
 - `CI` (`npm run lint`, `npm run build`) runs on every PR to `dev`/`main` and on pushes to `dev`.
 - `Deploy to Netlify` runs on push to `main`: builds in GitHub Actions and uploads `dist/` with
   `netlify-cli`. Production reads/writes Firestore. It needs:
-  - repo secrets `NETLIFY_AUTH_TOKEN`, `NETLIFY_SITE_ID`, `VITE_ADMIN_PASSWORD`, `VITE_FIREBASE_API_KEY`
-  - repo variables `VITE_DATA_SOURCE=firestore`, `VITE_FIREBASE_AUTH_DOMAIN`,
+  - repo secrets `NETLIFY_AUTH_TOKEN`, `NETLIFY_SITE_ID`, `VITE_FIREBASE_API_KEY`
+  - repo variables `VITE_DATA_SOURCE=firestore`, `VITE_ADMIN_EMAIL`, `VITE_FIREBASE_AUTH_DOMAIN`,
     `VITE_FIREBASE_PROJECT_ID`, `VITE_FIREBASE_STORAGE_BUCKET`,
     `VITE_FIREBASE_MESSAGING_SENDER_ID`, `VITE_FIREBASE_APP_ID`
     (`VITE_API_BASE_URL` only if switching to `api`)
@@ -124,24 +124,9 @@ in memory (resets on page reload).
    VITE_FIREBASE_APP_ID=...
    ```
 
-3. In the Firestore console, open the **Rules** tab and paste:
-
-   ```
-   rules_version = '2';
-   service cloud.firestore {
-     match /databases/{database}/documents {
-       match /cars/{carId} {
-         allow read, write: if true;
-         match /history/{historyId} {
-           allow read, write: if true;
-         }
-       }
-     }
-   }
-   ```
-
-   This matches the app's current FE-only admin gate (see **Admin Login** below) — anyone with
-   the project config can read/write. Tighten this once real Firebase Authentication is added.
+3. In **Authentication**, enable the Email/Password provider and add one admin user. Put its email
+   in `VITE_ADMIN_EMAIL`. In the Firestore console, open the **Rules** tab and paste
+   [`firestore.rules`](firestore.rules): anyone can read, only a signed-in user can write.
 4. Seed one example car so there's something to view/edit: `npm run seed:firebase`.
 5. Set `VITE_DATA_SOURCE=firestore` in `.env` and restart the dev server.
 
@@ -173,21 +158,18 @@ rest of the page.
 
 ## Admin Login
 
-Viewing cars (CarCycle list, CarCycle page, history, QR code) needs no login at all. **Editing**
-a car's data is gated behind an admin login:
+Viewing cars (list, car page, history, QR code) needs no login. **Editing** needs the admin login:
+click "เข้าสู่ระบบผู้ดูแล" in the header and type the password.
 
-```
-VITE_ADMIN_PASSWORD=admin123   # change this before sharing the app with anyone
-```
+- **`firestore` (production):** the password is checked by Firebase Auth against the user named in
+  `VITE_ADMIN_EMAIL`, and [`firestore.rules`](firestore.rules) reject writes without that session.
+  The session, not `localStorage`, decides who is admin (`src/services/adminAuth.ts`).
+- **`mock` / `api` (local dev only):** the password is compared with `VITE_ADMIN_PASSWORD`, which is
+  bundled into the JS. Never use these modes for a public build.
 
-Click "เข้าสู่ระบบผู้ดูแล" (Admin Login) in the header and enter this password to unlock the
-"แก้ไขข้อมูล" (edit) button on a car's CarCycle page; a plain visitor never sees it. The logged-in
-role is stored in `localStorage` (`src/features/auth/authSlice.ts`) until "ออกจากระบบ" (logout).
-
-**This is a convenience gate, not real security** — `VITE_ADMIN_PASSWORD` is bundled into the
-client-side JS, `localStorage` can be edited via devtools, and the Firestore rules above allow
-writes from anyone, so a motivated user could bypass it. Add Firebase Authentication and rewrite
-the Firestore rules to check `request.auth` before relying on this for anything sensitive.
+Switching production to these rules, in order: create the admin user, set the repo variable
+`VITE_ADMIN_EMAIL` (and delete the old `VITE_ADMIN_PASSWORD` secret), deploy, confirm login works
+on the live site, and only then paste the new rules. Pasting them first locks the live site out.
 
 ## State Management
 

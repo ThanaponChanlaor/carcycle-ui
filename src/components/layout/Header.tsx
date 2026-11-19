@@ -3,6 +3,7 @@ import { Link, NavLink } from 'react-router-dom'
 import { CarFront, House, Info, LogIn, LogOut } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { setRole } from '@/features/auth/authSlice'
+import { signOutAdmin } from '@/services/adminAuth'
 import Button from '@/components/ui/Button'
 import ConfirmDialog from '@/components/ui/ConfirmDialog'
 import AdminLoginModal from '@/features/auth/AdminLoginModal'
@@ -77,7 +78,9 @@ export default function Header() {
           cancelLabel="ยังไม่ออก"
           onConfirm={() => {
             setConfirmLogout(false)
-            dispatch(setRole('user'))
+            signOutAdmin()
+              .catch(() => {})
+              .finally(() => dispatch(setRole('user')))
           }}
           onCancel={() => setConfirmLogout(false)}
         >
