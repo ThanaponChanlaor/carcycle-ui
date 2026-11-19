@@ -9,7 +9,8 @@ import {
   updateDoc,
 } from 'firebase/firestore'
 import { db } from '@/services/firebaseClient'
-import type { Car, CarChangeRecord, CarHistoryEntry, CarUpdateInput } from '@/types'
+import { diffChanges } from '@/services/diffChanges'
+import type { Car, CarHistoryEntry, CarUpdateInput } from '@/types'
 
 const carsCollection = collection(db, 'cars')
 const historyCollection = (carId: string) => collection(db, 'cars', carId, 'history')
@@ -47,14 +48,7 @@ export async function firestoreUpdateCar(id: string, changes: CarUpdateInput): P
   }
 
   const current = snapshot.data() as Omit<Car, 'id'>
-  const fields = Object.keys(changes) as (keyof CarUpdateInput)[]
-  const changeRecords: CarChangeRecord[] = fields
-    .filter((field) => changes[field] !== undefined && String(changes[field]) !== String(current[field] ?? ''))
-    .map((field) => ({
-      field,
-      oldValue: String(current[field] ?? ''),
-      newValue: String(changes[field]),
-    }))
+  const changeRecords = diffChanges(current, changes)
 
   const updatedAt = now()
   await updateDoc(ref, { ...changes, updatedAt })
