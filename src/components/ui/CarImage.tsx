@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { CarFront } from 'lucide-react'
 
 interface CarImageProps {
   src?: string
@@ -11,8 +12,11 @@ export default function CarImage({ src, alt, className = '' }: CarImageProps) {
 
   if (!src || failed) {
     return (
-      <div className={`flex items-center justify-center rounded-lg bg-slate-100 text-5xl ${className}`}>
-        🚗
+      <div
+        className={`flex flex-col items-center justify-center gap-1 rounded-lg bg-slate-100 p-4 text-center text-slate-600 ${className}`}
+      >
+        <CarFront aria-hidden="true" className="h-10 w-10" />
+        ยังไม่มีรูปภาพ
       </div>
     )
   }
@@ -21,6 +25,7 @@ export default function CarImage({ src, alt, className = '' }: CarImageProps) {
     <img
       src={src}
       alt={alt}
+      loading="lazy"
       onError={() => setFailed(true)}
       className={`rounded-lg bg-slate-100 object-cover ${className}`}
     />

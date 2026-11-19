@@ -1,9 +1,12 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
+import { dataSource } from '@/services/endpoints'
 import type { UserRole } from '@/types'
 
 const ROLE_STORAGE_KEY = 'carcycle-role'
 
-const getStoredRole = (): UserRole => (localStorage.getItem(ROLE_STORAGE_KEY) === 'admin' ? 'admin' : 'user')
+// In firestore mode only the Firebase session (watchAdmin in main.tsx) can make someone admin.
+const getStoredRole = (): UserRole =>
+  dataSource !== 'firestore' && localStorage.getItem(ROLE_STORAGE_KEY) === 'admin' ? 'admin' : 'user'
 
 interface AuthState {
   role: UserRole

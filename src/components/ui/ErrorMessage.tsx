@@ -1,3 +1,6 @@
+import { CircleAlert, RotateCw } from 'lucide-react'
+import Button from '@/components/ui/Button'
+
 interface ErrorMessageProps {
   message: string
   onRetry?: () => void
@@ -5,16 +8,16 @@ interface ErrorMessageProps {
 
 export default function ErrorMessage({ message, onRetry }: ErrorMessageProps) {
   return (
-    <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-center">
-      <p className="text-sm text-red-700">{message}</p>
+    <div role="alert" className="rounded-xl border border-red-200 bg-red-50 p-6">
+      <p className="flex items-start gap-3 font-semibold text-red-700">
+        <CircleAlert aria-hidden="true" className="mt-1 h-6 w-6 shrink-0" />
+        <span>{message}</span>
+      </p>
       {onRetry && (
-        <button
-          type="button"
-          onClick={onRetry}
-          className="mt-2 text-sm font-medium text-red-600 underline hover:text-red-800"
-        >
-          Try again
-        </button>
+        <Button variant="secondary" onClick={onRetry} className="mt-4">
+          <RotateCw aria-hidden="true" className="h-6 w-6" />
+          ลองอีกครั้ง
+        </Button>
       )}
     </div>
   )

@@ -1,9 +1,10 @@
-import { useState, type FormEvent } from 'react'
+import { useRef, useState, type FormEvent } from 'react'
 import { useAppDispatch } from '@/app/hooks'
 import { setRole } from '@/features/auth/authSlice'
-import Card from '@/components/ui/Card'
+import { signInAdmin } from '@/services/adminAuth'
 import Button from '@/components/ui/Button'
-import ErrorMessage from '@/components/ui/ErrorMessage'
+import Dialog from '@/components/ui/Dialog'
+import Field from '@/components/ui/Field'
 
 interface AdminLoginModalProps {
   onClose: () => void
@@ -11,45 +12,49 @@ interface AdminLoginModalProps {
 
 export default function AdminLoginModal({ onClose }: AdminLoginModalProps) {
   const dispatch = useAppDispatch()
+  const passwordRef = useRef<HTMLInputElement>(null)
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
-    if (password === import.meta.env.VITE_ADMIN_PASSWORD) {
-      dispatch(setRole('admin'))
-      onClose()
-    } else {
-      setError('รหัสผ่านไม่ถูกต้อง')
+    try {
+      if (await signInAdmin(password)) {
+        dispatch(setRole('admin'))
+        onClose()
+        return
+      }
+      setError('รหัสผ่านไม่ถูกต้อง กรุณาตรวจสอบแล้วลองอีกครั้ง')
+    } catch {
+      setError('เข้าสู่ระบบไม่สำเร็จ กรุณาตรวจสอบอินเทอร์เน็ตแล้วลองอีกครั้ง')
     }
+    passwordRef.current?.focus()
   }
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-900/40 p-4">
-      <Card className="w-full max-w-sm">
-        <h2 className="text-lg font-semibold text-slate-900">เข้าสู่ระบบผู้ดูแล</h2>
-        <form onSubmit={handleSubmit} className="mt-4 space-y-4">
-          <label className="block text-sm">
-            <span className="mb-1 block text-slate-600">รหัสผ่าน</span>
-            <input
-              type="password"
-              autoFocus
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-200"
-            />
-          </label>
-          {error && <ErrorMessage message={error} />}
-          <div className="flex gap-2">
-            <Button type="submit" size="sm">
-              เข้าสู่ระบบ
-            </Button>
-            <Button type="button" variant="ghost" size="sm" onClick={onClose}>
-              ยกเลิก
-            </Button>
-          </div>
-        </form>
-      </Card>
-    </div>
+    <Dialog title="เข้าสู่ระบบผู้ดูแล" onClose={onClose}>
+      <form onSubmit={handleSubmit} noValidate className="space-y-6">
+        <Field
+          ref={passwordRef}
+          id="admin-password"
+          label="รหัสผ่าน"
+          type="password"
+          autoComplete="current-password"
+          data-autofocus
+          value={password}
+          error={error ?? undefined}
+          onChange={(e) => {
+            setPassword(e.target.value)
+            setError(null)
+          }}
+        />
+        <div className="flex flex-wrap gap-4">
+          <Button type="submit">เข้าสู่ระบบ</Button>
+          <Button variant="secondary" onClick={onClose}>
+            ยกเลิก
+          </Button>
+        </div>
+      </form>
+    </Dialog>
   )
 }
