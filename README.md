@@ -124,10 +124,13 @@ in memory (resets on page reload).
    VITE_FIREBASE_APP_ID=...
    ```
 
-3. In **Authentication**, enable the Email/Password provider and add one admin user. Put its email
-   in `VITE_ADMIN_EMAIL`. In the Firestore console, open the **Rules** tab and paste
-   [`firestore.rules`](firestore.rules): anyone can read, only a signed-in user can write.
-4. Seed one example car so there's something to view/edit: `npm run seed:firebase`.
+3. Seed one example car so there's something to view/edit: `npm run seed:firebase`. The seed
+   script writes without signing in, so run it **before** the rules in step 4 are pasted.
+4. In **Authentication**, enable the Email/Password provider, add one admin user, and turn off
+   **User actions → Enable create (sign-up)** so nobody else can make an account with the public
+   API key. Put the admin's email in `VITE_ADMIN_EMAIL`. Then open the Firestore **Rules** tab and
+   paste [`firestore.rules`](firestore.rules), replacing `ADMIN_EMAIL` with that same email:
+   anyone can read, only the admin can write.
 5. Set `VITE_DATA_SOURCE=firestore` in `.env` and restart the dev server.
 
 Data model: a `cars/{carId}` document per car (fields match the `Car` type), with a
@@ -167,9 +170,10 @@ click "เข้าสู่ระบบผู้ดูแล" in the header and
 - **`mock` / `api` (local dev only):** the password is compared with `VITE_ADMIN_PASSWORD`, which is
   bundled into the JS. Never use these modes for a public build.
 
-Switching production to these rules, in order: create the admin user, set the repo variable
+Switching production to these rules, in order: create the admin user and turn off sign-up, set the repo variable
 `VITE_ADMIN_EMAIL` (and delete the old `VITE_ADMIN_PASSWORD` secret), deploy, confirm login works
-on the live site, and only then paste the new rules. Pasting them first locks the live site out.
+on the live site, and only then paste the new rules (with `ADMIN_EMAIL` replaced). Pasting them
+first locks the live site out.
 
 ## State Management
 
