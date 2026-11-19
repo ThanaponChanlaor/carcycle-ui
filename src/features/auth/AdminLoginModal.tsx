@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { useAppDispatch } from '@/app/hooks'
 import { setRole } from '@/features/auth/authSlice'
+import { signInAdmin } from '@/services/adminAuth'
 import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
 import ErrorMessage from '@/components/ui/ErrorMessage'
@@ -14,13 +15,17 @@ export default function AdminLoginModal({ onClose }: AdminLoginModalProps) {
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
-    if (password === import.meta.env.VITE_ADMIN_PASSWORD) {
-      dispatch(setRole('admin'))
-      onClose()
-    } else {
-      setError('รหัสผ่านไม่ถูกต้อง')
+    try {
+      if (await signInAdmin(password)) {
+        dispatch(setRole('admin'))
+        onClose()
+      } else {
+        setError('รหัสผ่านไม่ถูกต้อง')
+      }
+    } catch {
+      setError('เข้าสู่ระบบไม่สำเร็จ กรุณาตรวจสอบอินเทอร์เน็ตแล้วลองอีกครั้ง')
     }
   }
 

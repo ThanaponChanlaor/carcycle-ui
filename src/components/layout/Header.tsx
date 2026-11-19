@@ -3,6 +3,7 @@ import { Link, NavLink } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { toggleSidebar, setSidebarOpen } from '@/features/ui/uiSlice'
 import { setRole } from '@/features/auth/authSlice'
+import { signOutAdmin } from '@/services/adminAuth'
 import AdminLoginModal from '@/features/auth/AdminLoginModal'
 import Button from '@/components/ui/Button'
 
@@ -47,7 +48,7 @@ export default function Header() {
           {role === 'admin' ? (
             <>
               <span className="hidden text-sm text-slate-500 sm:inline">ผู้ดูแลระบบ</span>
-              <Button variant="ghost" size="sm" onClick={() => dispatch(setRole('user'))}>
+              <Button variant="ghost" size="sm" onClick={() => signOutAdmin().finally(() => dispatch(setRole('user')))}>
                 ออกจากระบบ
               </Button>
             </>
