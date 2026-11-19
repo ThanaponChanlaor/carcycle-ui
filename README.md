@@ -103,8 +103,6 @@ VITE_DATA_SOURCE=mock     # mock (default) | firestore | api
 VITE_API_BASE_URL=http://localhost:8080/api   # used when VITE_DATA_SOURCE=api (CarCycleService)
 ```
 
-`VITE_USE_MOCK_DATA=false` still selects Firestore when `VITE_DATA_SOURCE` is unset.
-
 Leave `VITE_DATA_SOURCE=mock` while developing UI — the app runs fully functional against
 seeded sample cars and history, including simulated "update" calls that append a history entry
 in memory (resets on page reload).
@@ -145,7 +143,7 @@ in memory (resets on page reload).
    This matches the app's current FE-only admin gate (see **Admin Login** below) — anyone with
    the project config can read/write. Tighten this once real Firebase Authentication is added.
 4. Seed one example car so there's something to view/edit: `npm run seed:firebase`.
-5. Set `VITE_USE_MOCK_DATA=false` in `.env` and restart the dev server.
+5. Set `VITE_DATA_SOURCE=firestore` in `.env` and restart the dev server.
 
 Data model: a `cars/{carId}` document per car (fields match the `Car` type), with a
 `cars/{carId}/history` subcollection of change-log entries. No component, slice, or page needs to
