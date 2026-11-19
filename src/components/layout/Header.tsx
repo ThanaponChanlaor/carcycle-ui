@@ -1,101 +1,96 @@
 import { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
+import { CarFront, House, Info, LogIn, LogOut } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
-import { toggleSidebar, setSidebarOpen } from '@/features/ui/uiSlice'
 import { setRole } from '@/features/auth/authSlice'
-import AdminLoginModal from '@/features/auth/AdminLoginModal'
+import { signOutAdmin } from '@/services/adminAuth'
 import Button from '@/components/ui/Button'
+import ConfirmDialog from '@/components/ui/ConfirmDialog'
+import AdminLoginModal from '@/features/auth/AdminLoginModal'
 
 const navLinks = [
-  { to: '/', label: 'CarCycle' },
-  { to: '/about', label: 'About', adminOnly: true },
+  { to: '/', label: 'หน้าหลัก', icon: House },
+  { to: '/about', label: 'เกี่ยวกับระบบ', icon: Info, adminOnly: true },
 ]
 
 export default function Header() {
   const dispatch = useAppDispatch()
-  const sidebarOpen = useAppSelector((state) => state.ui.sidebarOpen)
   const role = useAppSelector((state) => state.auth.role)
+  const [confirmLogout, setConfirmLogout] = useState(false)
   const [showLogin, setShowLogin] = useState(false)
   const visibleLinks = navLinks.filter((link) => !link.adminOnly || role === 'admin')
 
   return (
-    <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur-sm print:hidden">
-      <div className="container-app flex h-16 items-center justify-between gap-4">
-        <Link to="/" className="text-xl font-bold text-primary-600">
-          🚗 CarCycle
+    <header className="border-b border-slate-200 bg-white print:hidden">
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-primary-700 focus:px-6 focus:py-3 focus:font-semibold focus:text-white"
+      >
+        ข้ามไปเนื้อหาหลัก
+      </a>
+
+      {/* Below md: logo + account button on row 1, menu stretched across row 2. md and up: one row. */}
+      <div className="container-app flex flex-wrap items-center gap-x-3 gap-y-2 py-3 md:gap-x-6">
+        <Link
+          to="/"
+          className="order-1 inline-flex min-h-12 items-center gap-2 rounded-lg text-xl font-bold text-primary-700 sm:text-2xl"
+        >
+          <CarFront aria-hidden="true" className="h-8 w-8" />
+          CarCycle
         </Link>
 
-        <nav className="hidden md:flex md:items-center md:gap-1">
-          {visibleLinks.map((link) => (
+        <nav aria-label="เมนูหลัก" className="order-3 flex w-full gap-2 md:order-2 md:w-auto">
+          {visibleLinks.map(({ to, label, icon: Icon }) => (
             <NavLink
-              key={link.to}
-              to={link.to}
+              key={to}
+              to={to}
+              end
               className={({ isActive }) =>
-                `rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
-                  isActive
-                    ? 'bg-primary-50 text-primary-700'
-                    : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                `inline-flex min-h-12 flex-1 items-center justify-center gap-2 rounded-lg px-4 py-1 transition-colors duration-150 md:flex-none ${
+                  isActive ? 'bg-primary-50 font-semibold text-primary-800' : 'font-semibold text-primary-700 hover:bg-primary-50'
                 }`
               }
             >
-              {link.label}
+              <Icon aria-hidden="true" className="h-6 w-6" />
+              {label}
             </NavLink>
           ))}
         </nav>
 
-        <div className="ml-auto flex items-center gap-2 md:ml-0">
-          {role === 'admin' ? (
-            <>
-              <span className="hidden text-sm text-slate-500 sm:inline">ผู้ดูแลระบบ</span>
-              <Button variant="ghost" size="sm" onClick={() => dispatch(setRole('user'))}>
-                ออกจากระบบ
-              </Button>
-            </>
-          ) : (
-            <Button variant="outline" size="sm" onClick={() => setShowLogin(true)}>
-              เข้าสู่ระบบผู้ดูแล
+        {role === 'admin' ? (
+          <div className="order-2 ml-auto flex items-center gap-x-4 md:order-3">
+            <span className="hidden text-slate-600 lg:inline">ผู้ดูแลระบบ</span>
+            <Button variant="secondary" onClick={() => setConfirmLogout(true)}>
+              <LogOut aria-hidden="true" className="h-6 w-6" />
+              ออกจากระบบ
             </Button>
-          )}
-        </div>
-
-        {showLogin && <AdminLoginModal onClose={() => setShowLogin(false)} />}
-
-        <button
-          type="button"
-          className="inline-flex items-center justify-center rounded-lg p-2 text-slate-600 hover:bg-slate-100 md:hidden"
-          aria-label="Toggle menu"
-          aria-expanded={sidebarOpen}
-          onClick={() => dispatch(toggleSidebar())}
-        >
-          <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            {sidebarOpen ? (
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            ) : (
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            )}
-          </svg>
-        </button>
+          </div>
+        ) : (
+          <Button variant="secondary" className="order-2 ml-auto md:order-3" onClick={() => setShowLogin(true)}>
+            <LogIn aria-hidden="true" className="h-6 w-6" />
+            <span className="md:hidden">เข้าสู่ระบบ</span>
+            <span className="hidden md:inline">เข้าสู่ระบบผู้ดูแล</span>
+          </Button>
+        )}
       </div>
 
-      {sidebarOpen && (
-        <nav className="border-t border-slate-200 bg-white md:hidden">
-          <div className="container-app flex flex-col gap-1 py-3">
-            {visibleLinks.map((link) => (
-              <NavLink
-                key={link.to}
-                to={link.to}
-                onClick={() => dispatch(setSidebarOpen(false))}
-                className={({ isActive }) =>
-                  `rounded-lg px-4 py-3 text-sm font-medium ${
-                    isActive ? 'bg-primary-50 text-primary-700' : 'text-slate-600 hover:bg-slate-100'
-                  }`
-                }
-              >
-                {link.label}
-              </NavLink>
-            ))}
-          </div>
-        </nav>
+      {showLogin && <AdminLoginModal onClose={() => setShowLogin(false)} />}
+
+      {confirmLogout && (
+        <ConfirmDialog
+          title="ออกจากระบบใช่ไหม"
+          confirmLabel="ออกจากระบบ"
+          cancelLabel="ยังไม่ออก"
+          onConfirm={() => {
+            setConfirmLogout(false)
+            signOutAdmin()
+              .catch(() => {})
+              .finally(() => dispatch(setRole('user')))
+          }}
+          onCancel={() => setConfirmLogout(false)}
+        >
+          <p>ถ้ากำลังแก้ไขข้อมูลอยู่ ข้อมูลที่ยังไม่ได้บันทึกจะหายไป</p>
+        </ConfirmDialog>
       )}
     </header>
   )

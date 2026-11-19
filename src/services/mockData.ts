@@ -1,4 +1,5 @@
 import type { Car, CarHistoryEntry, CarUpdateInput } from '@/types'
+import { diffChanges } from '@/services/diffChanges'
 
 const now = () => new Date().toISOString()
 
@@ -223,7 +224,7 @@ const delay = (ms = 400) => new Promise((resolve) => setTimeout(resolve, ms))
 
 export async function mockGetCars(): Promise<{ data: Car[] }> {
   await delay()
-  return { data: cars }
+  return { data: cars.map((car) => ({ ...car })) }
 }
 
 export async function mockGetCarById(id: string): Promise<{ data: Car }> {
@@ -232,7 +233,7 @@ export async function mockGetCarById(id: string): Promise<{ data: Car }> {
   if (!car) {
     return Promise.reject({ message: `Car "${id}" was not found`, status: 404 })
   }
-  return { data: car }
+  return { data: { ...car } }
 }
 
 export async function mockGetCarHistory(carId: string): Promise<{ data: CarHistoryEntry[] }> {
@@ -240,7 +241,7 @@ export async function mockGetCarHistory(carId: string): Promise<{ data: CarHisto
   const entries = history
     .filter((entry) => entry.carId === carId)
     .sort((a, b) => new Date(b.changedAt).getTime() - new Date(a.changedAt).getTime())
-  return { data: entries }
+  return { data: entries.map((entry) => ({ ...entry })) }
 }
 
 export async function mockUpdateCar(id: string, changes: CarUpdateInput): Promise<{ data: Car }> {
@@ -251,14 +252,7 @@ export async function mockUpdateCar(id: string, changes: CarUpdateInput): Promis
   }
 
   const current = cars[index]
-  const fields = Object.keys(changes) as (keyof CarUpdateInput)[]
-  const changeRecords = fields
-    .filter((field) => changes[field] !== undefined && String(changes[field]) !== String(current[field] ?? ''))
-    .map((field) => ({
-      field,
-      oldValue: String(current[field] ?? ''),
-      newValue: String(changes[field]),
-    }))
+  const changeRecords = diffChanges(current, changes)
 
   const updated: Car = { ...current, ...changes, updatedAt: now() }
   cars[index] = updated
