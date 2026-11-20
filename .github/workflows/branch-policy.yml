@@ -1,7 +1,7 @@
 name: Branch policy
 
 # Git flow: feature/* -> dev -> main.
-#   PRs into dev  must come from feature/*
+#   PRs into dev  must come from feature/* (or main, to back-merge main -> dev)
 #   PRs into main must come from dev
 on:
   pull_request:
@@ -24,9 +24,9 @@ jobs:
               fi ;;
             dev)
               case "$HEAD_REF" in
-                feature/*) ;;
+                feature/*|main) ;;
                 *)
-                  echo "::error::PRs into dev must come from a feature/* branch (got '$HEAD_REF')."
+                  echo "::error::PRs into dev must come from feature/* or main (got '$HEAD_REF')."
                   exit 1 ;;
               esac ;;
             *)
